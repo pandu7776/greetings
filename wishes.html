@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Love Envelope</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ffe0ec 0%, #fcb6b6 100%);
+      overflow: hidden;
+      font-family: 'Quicksand', sans-serif;
+      user-select: none;
+      touch-action: manipulation;
+      width: 100vw;
+      min-height: 100vh;
+    }
+    body {
+      min-height: 100vh;
+      min-width: 100vw;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1200px;
+      position: relative;
+    }
+    .center-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .envelope-container {
+      position: relative;
+      width: 340px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      margin-bottom: 20px;
+    }
+    .envelope {
+      position: absolute;
+      width: 280px;
+      height: 220px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      z-index: 2;
+      perspective: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .envelope .heart-flap {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%) rotate(0deg);
+      z-index: 3;
+      transition: transform 1s cubic-bezier(.77,0,.18,1.01);
+      transform-origin: bottom center;
+      will-change: transform;
+      pointer-events: none;
+    }
+    .envelope.opened .heart-flap {
+      transform: translateX(-50%) rotateX(-120deg);
+    }
+    .envelope .heart-flap svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .envelope .envelope-base {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0; top: 0;
+      z-index: 2;
+      background: #fff8f0;
+      border-radius: 0 0 80px 80px / 0 0 60px 60px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 2px 12px 0 #ffb6b9;
+      border: 2px solid #ffb6b9;
+    }
+    .envelope .envelope-heart {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      z-index: 4;
+      pointer-events: none;
+    }
+    .envelope .envelope-heart svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 2px 8px #ffb6b9a0);
+    }
+    .tap-hint {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 90%;
+      text-align: center;
+      color: #ff6f91;
+      font-size: 1.2em;
+      letter-spacing: 1px;
+      font-family: 'Pacifico', cursive;
+      opacity: 0.85;
+      animation: taphint 1.8s infinite alternate;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @keyframes taphint {
+      0% { opacity: 0.7; transform: translateY(0);}
+      100% { opacity: 1; transform: translateY(8px);}
+    }
+    .greeting-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 94%;
+      max-width: 350px;
+      min-height: 430px;
+      background: #fff8f0;
+      border-radius: 32px;
+      box-shadow: 0 16px 48px 0 rgba(31, 38, 135, 0.16), 0 2px 12px 0 #ffb6b9;
+      padding: 40px 24px 48px 24px;
+      text-align: center;
+      transform: translate(-50%, -50%) scale(0.7) rotateX(45deg);
+      opacity: 0;
+      z-index: 1;
+      transition:
+        transform 1.1s cubic-bezier(.77,0,.18,1.01),
+        opacity 0.7s cubic-bezier(.77,0,.18,1.01);
+      pointer-events: none;
+      overflow: visible;
+    }
+    .envelope.opened + .greeting-card {
+      transform: translate(-50%, -50%) scale(1) rotateX(0deg);
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 10;
+      transition-delay: 0.4s, 0.4s;
+    }
+    .greeting-card h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.1em;
+      color: #ff6f91;
+      margin: 0.2em 0 0.3em 0;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 12px #ffe0ec;
+    }
+    .greeting-card .wish {
+      font-size: 1.1em;
+      color: #7c4d3f;
+      margin: 1.1em 0 0.8em 0;
+      line-height: 1.6;
+      font-style: italic;
+      text-shadow: 0 2px 8px #ffe0ec;
+      font-family: 'Quicksand', sans-serif;
+    }
+    .greeting-card .from {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2em;
+      color: #d46a6a;
+      margin-top: 2.2em;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px #ffe0ec;
+    }
+    .greeting-card .party-burst {
+      position: absolute;
+      left: 50%;
+      top: 0%;
+      width: 100%;
+      height: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .greeting-card .party-burst .burst-heart,
+    .greeting-card .party-burst .burst-balloon,
+    .greeting-card .party-burst .burst-paper {
+      position: absolute;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    .greeting-card.burst .party-burst .burst-heart,
+    .greeting-card.burst .party-burst .burst-balloon,
+    .greeting-card.burst .party-burst .burst-paper {
+      opacity: 1;
+      animation: burstUp 1.2s cubic-bezier(.77,0,.18,1.01);
+    }
+    @keyframes burstUp {
+      0% { opacity: 0; transform: translateY(20px) scale(0.5) rotate(0deg);}
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-120px) scale(1.2) rotate(36deg);}
+    }
+    .flying-butterfly {
+      position: fixed;
+      width: 32px;
+      height: 32px;
+      z-index: 30;
+      pointer-events: none;
+      will-change: transform;
+      transition: filter 0.3s;
+      filter: drop-shadow(0 2px 6px #ffb6b9a0);
+      opacity: 0.92;
+      animation: flutterWings 1.2s infinite alternate;
+    }
+    @keyframes flutterWings {
+      0% { filter: drop-shadow(0 2px 6px #ffb6b9a0) brightness(1);}
+      100% { filter: drop-shadow(0 4px 12px #ffb6b9a0) brightness(1.1);}
+    }
+    @media (max-width: 600px) {
+      .center-content {
+        min-height: 100vh;
+        width: 100vw;
+      }
+      .envelope-container {
+        width: 98vw;
+        height: 60vw;
+        min-height: 260px;
+        max-width: 100vw;
+      }
+      .envelope {
+        width: 90vw;
+        height: 58vw;
+        min-width: 200px;
+        min-height: 120px;
+        max-width: 350px;
+        max-height: 220px;
+      }
+      .envelope .heart-flap {
+        width: 55vw;
+        height: 55vw;
+        min-width: 120px;
+        min-height: 120px;
+        max-width: 180px;
+        max-height: 180px;
+        top: -25px;
+      }
+      .envelope .envelope-heart {
+        width: 55px;
+        height: 55px;
+        min-width: 38px;
+        min-height: 38px;
+        max-width: 80px;
+        max-height: 80px;
+        bottom: 10px;
+      }
+      .greeting-card {
+        padding: 24px 8px 32px 8px;
+        min-height: 320px;
+        width: 97vw;
+        max-width: 97vw;
+      }
+      .greeting-card h1 { font-size: 1.4em;}
+      .greeting-card .wish { font-size: 1em;}
+      .greeting-card .from { font-size: 1em;}
+    }
+  </style>
+</head>
+<body>
+  <img class="flying-butterfly" id="butterfly1" src="https://img.icons8.com/color/48/000000/butterfly--v2.png" alt="Butterfly"/>
+  <img class="flying-butterfly" id="butterfly2" src="https://img.icons8.com/color/48/000000/butterfly.png" alt="Butterfly"/>
+  <img class="flying-butterfly" id="butterfly3" src="https://img.icons8.com/color/48/000000/butterfly--v1.png" alt="Butterfly"/>
+  <img class="flying-butterfly" id="butterfly4" src="https://img.icons8.com/color/48/000000/butterfly--v2.png" alt="Butterfly"/>
+  <img class="flying-butterfly" id="butterfly5" src="https://img.icons8.com/color/48/000000/butterfly.png" alt="Butterfly"/>
+  <img class="flying-butterfly" id="butterfly6" src="https://img.icons8.com/color/48/000000/butterfly--v1.png" alt="Butterfly"/>
+  <div class="center-content">
+    <div class="envelope-container">
+      <div class="envelope" id="envelope">
+        <div class="heart-flap">
+          <svg viewBox="0 0 180 180">
+            <path d="M90 170 Q10 100 40 50 Q90 -10 140 50 Q170 100 90 170 Z" fill="#ffb6b9" stroke="#ff6f91" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="envelope-base"></div>
+        <div class="envelope-heart">
+          <svg viewBox="0 0 80 80">
+            <path d="M40 72 Q10 44 24 24 Q40 4 56 24 Q70 44 40 72 Z" fill="#ff6f91" stroke="#fff8f0" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="tap-hint" id="tapHint">Tap to open</div>
+      </div>
+      <div class="greeting-card" id="greetingCard">
+        <div class="party-burst" id="partyBurst">
+        </div>
+        <h1>Happy Birthday, My Dearest</h1>
+        <div class="wish">
+            To the one who discovers a new side of me:<br>
+          <b>You are my best friend, the joy in my heart, and my favorite incomplete wish.</b><br>
+          Here’s to a year full of big dreams, happy surprises, and endless joy with whoever you choose.<br>
+          <span style="color:#ffb347;">With you, every moment feels special for everyone around you</span>
+        </div>
+        <svg class="bouquet3d" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 22px;">
+          <ellipse cx="70" cy="70" rx="45" ry="12" fill="#ffe0ec" opacity="0.3"/>
+          <g>
+            <ellipse cx="40" cy="40" rx="16" ry="22" fill="#ffb6b9"/>
+            <ellipse cx="100" cy="38" rx="16" ry="22" fill="#ffe066"/>
+            <ellipse cx="70" cy="30" rx="18" ry="26" fill="#fcb6b6"/>
+            <ellipse cx="60" cy="60" rx="12" ry="16" fill="#bde0fe"/>
+            <ellipse cx="90" cy="62" rx="12" ry="16" fill="#a2d2ff"/>
+          </g>
+          <rect x="65" y="60" width="10" height="28" rx="5" fill="#a67c52"/>
+          <ellipse cx="70" cy="80" rx="10" ry="3" fill="#a67c52" opacity="0.3"/>
+        </svg>
+        <div class="from">
+            Always, your silent star in the sky, felt like disturbing you.. yet want to wish.<br>
+          Pandu 💞
+        </div>
+      </div>
+    </div>
+  </div>
+  <canvas class="confetti"></canvas>
+  <script>
+    const canvas = document.querySelector('.confetti');
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth, H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+
+    let confettiPieces = [];
+    for (let i = 0; i < 80; i++) {
+      confettiPieces.push({
+        x: Math.random() * W,
+        y: Math.random() * H - H,
+        r: Math.random() * 8 + 4,
+        d: Math.random() * 80 + 40,
+        color: `hsl(${Math.random()*360},70%,60%)`,
+        tilt: Math.random() * 10 - 10
+      });
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, W, H);
+      confettiPieces.forEach(c => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, 2 * Math.PI);
+        ctx.fillStyle = c.color;
+        ctx.fill();
+      });
+      updateConfetti();
+      requestAnimationFrame(drawConfetti);
+    }
+
+    function updateConfetti() {
+      confettiPieces.forEach(c => {
+        c.y += Math.cos(c.d) + 1 + c.r/4;
+        c.x += Math.sin(c.d);
+        if (c.y > H) {
+          c.y = -10;
+          c.x = Math.random() * W;
+        }
+      });
+    }
+
+    drawConfetti();
+    window.addEventListener('resize', () => {
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W; canvas.height = H;
+      sceneRect = document.querySelector('.envelope-container').getBoundingClientRect();
+    });
+
+    function animateButterfly(butterfly, pathFn, duration, delay = 0) {
+      let start = null;
+      function step(timestamp) {
+        if (!start) start = timestamp;
+        let progress = ((timestamp - start + delay * 1000) % (duration * 1000)) / (duration * 1000);
+        let pos = pathFn(progress);
+        butterfly.style.transform = `translate(${pos.x}px, ${pos.y}px) scale(${1 + 0.1 * Math.sin(progress * 8 * Math.PI)}) rotate(${Math.sin(progress * 6 * Math.PI) * 16}deg)`;
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    let sceneRect = document.querySelector('.envelope-container').getBoundingClientRect();
+
+    function path1(t) {
+      return {
+        x: sceneRect.left + 20 + (sceneRect.width - 60) * t,
+        y: sceneRect.top + 60 + Math.sin(t * 2 * Math.PI) * 60
+      };
+    }
+    function path2(t) {
+      return {
+        x: sceneRect.left + sceneRect.width/2 + Math.sin(t * 2 * Math.PI) * 110,
+        y: sceneRect.top + sceneRect.height/2 + Math.sin(t * 4 * Math.PI) * 60
+      };
+    }
+    function path3(t) {
+      let angle = 2 * Math.PI * t * 2;
+      let spiral = 70 + 40 * Math.sin(t * 2 * Math.PI);
+      return {
+        x: sceneRect.left + sceneRect.width/2 + Math.cos(angle) * spiral,
+        y: sceneRect.top + sceneRect.height/2 + Math.sin(angle) * spiral * 0.7
+      };
+    }
+    function path4(t) {
+      return {
+        x: sceneRect.left + 30 + (sceneRect.width - 60) * (1 - t),
+        y: sceneRect.top + 80 + Math.cos(t * 2 * Math.PI) * 50
+      };
+    }
+    function path5(t) {
+      return {
+        x: sceneRect.left + sceneRect.width/3 + Math.cos(t * 2 * Math.PI) * 90,
+        y: sceneRect.top + sceneRect.height/3 + Math.sin(t * 4 * Math.PI) * 70
+      };
+    }
+    function path6(t) {
+      let angle = 2 * Math.PI * t * 3;
+      let spiral = 60 + 30 * Math.cos(t * 2 * Math.PI);
+      return {
+        x: sceneRect.left + sceneRect.width/2 + Math.sin(angle) * spiral,
+        y: sceneRect.top + sceneRect.height/2 + Math.cos(angle) * spiral * 0.8
+      };
+    }
+
+    window.addEventListener('load', () => {
+      animateButterfly(document.getElementById('butterfly1'), path1, 12, 0);
+      animateButterfly(document.getElementById('butterfly2'), path2, 16, 5);
+      animateButterfly(document.getElementById('butterfly3'), path3, 18, 2.5);
+      animateButterfly(document.getElementById('butterfly4'), path4, 14, 1);
+      animateButterfly(document.getElementById('butterfly5'), path5, 15, 3);
+      animateButterfly(document.getElementById('butterfly6'), path6, 17, 4.5);
+    });
+    window.addEventListener('resize', () => {
+      sceneRect = document.querySelector('.envelope-container').getBoundingClientRect();
+    });
+
+    const envelope = document.getElementById('envelope');
+    const greetingCard = document.getElementById('greetingCard');
+    const tapHint = document.getElementById('tapHint');
+    const partyBurst = document.getElementById('partyBurst');
+
+    function createBurst() {
+      partyBurst.innerHTML = '';
+      for (let i = 0; i < 7; i++) {
+        let el = document.createElement('div');
+        el.className = 'burst-heart';
+        el.innerHTML = '❤️';
+        el.style.left = `${30 + i * 9 + Math.random() * 8}%`;
+        el.style.top = `${-10 + Math.random() * 10}px`;
+        el.style.fontSize = `${24 + Math.random() * 12}px`;
+        el.style.animationDelay = `${0.05 * i + Math.random() * 0.07}s`;
+        partyBurst.appendChild(el);
+      }
+      for (let i = 0; i < 4; i++) {
+        let el = document.createElement('div');
+        el.className = 'burst-balloon';
+        el.innerHTML = ['🎈','🎉','🎊','🎈'][i%4];
+        el.style.left = `${15 + i * 20 + Math.random() * 10}%`;
+        el.style.top = `${-10 + Math.random() * 10}px`;
+        el.style.fontSize = `${22 + Math.random() * 10}px`;
+        el.style.animationDelay = `${0.1 * i + Math.random() * 0.07}s`;
+        partyBurst.appendChild(el);
+      }
+      for (let i = 0; i < 8; i++) {
+        let el = document.createElement('div');
+        el.className = 'burst-paper';
+        el.innerHTML = ['💛','💙','💜','💚','🧡','❤️','💗','💞'][i%8];
+        el.style.left = `${8 + i * 11 + Math.random() * 8}%`;
+        el.style.top = `${-8 + Math.random() * 10}px`;
+        el.style.fontSize = `${16 + Math.random() * 10}px`;
+        el.style.animationDelay = `${0.12 * i + Math.random() * 0.04}s`;
+        partyBurst.appendChild(el);
+      }
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('touchstart', openEnvelope);
+
+    let opened = false;
+    function openEnvelope(e) {
+      if (opened) return;
+      opened = true;
+      envelope.classList.add('opened');
+      tapHint.style.display = 'none';
+      setTimeout(() => {
+        greetingCard.classList.add('burst');
+        createBurst();
+        setTimeout(() => {
+          greetingCard.classList.remove('burst');
+        }, 1500);
+      }, 600);
+    }
+  </script>
+</body>
+</html>
